@@ -1,0 +1,18 @@
+package org.uniquindio.edu.co.poo.model;
+
+import java.time.LocalDate;
+
+// clase especial diseñada para ser simple y solo representar informacion (los datos son inmutables y automaticamente
+// se crean los getters, el toString, el .equals, y el hashCode)
+public record Paciente(
+        String    id,
+        String numHistoriaClinica,
+        String    nombre,
+        byte      edad,
+        String    telefono,
+        String    direccion,
+        LocalDate fechaUltimaConsulta,
+        int       tratamientosRealizados
+) {
+}
+
