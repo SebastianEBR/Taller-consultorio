@@ -1,0 +1,38 @@
+package org.uniquindio.edu.co.poo.model;
+
+// clase Medico hija de la clase Persona
+public class Medico extends Persona {
+    private String numLicencia;
+
+    //conexion con la clase enum Especialidad
+    private Especialidad especialidad;
+
+    //constructor
+    public Medico(String id, String nombre, String apellidos, String telefono, String numLicencia, Especialidad especialidad) {
+        super(id, nombre, apellidos, telefono);
+        this.numLicencia = numLicencia;
+        this.especialidad = especialidad;
+    }
+
+    //getters y setters
+    public String getNumLicencia() {
+        return numLicencia;
+    }
+    public void setNumLicencia(String numLicencia) {
+        this.numLicencia = numLicencia;
+    }
+    public Especialidad getEspecialidad() {
+        return especialidad;
+    }
+    public void setEspecialidad(Especialidad especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    // metodo costructor
+    @Override
+    public String toString() {
+        return super.toString() +
+                "\nNumero de licencia: " + numLicencia +
+                "\nEspecialidad: "       + especialidad;
+    }
+}
