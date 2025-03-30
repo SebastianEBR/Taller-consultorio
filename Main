@@ -1,0 +1,244 @@
+package org.uniquindio.edu.co.poo.app;
+
+import org.uniquindio.edu.co.poo.model.Consultorio;
+import org.uniquindio.edu.co.poo.model.Especialidad;
+
+import javax.swing.*;
+import java.time.LocalDate;
+
+public class Main {
+    public static void main(String[] args) {
+        Consultorio consultorio = new Consultorio("SebSalud", "calle 7 #19 - 06", "10234657898");
+        boolean continuar = true;
+
+        while (continuar) {
+            // Opciones del menú
+            String[] opciones = {
+                    "Registrar un Medico",
+                    "Ver informacion de un Medico",
+                    "Actualizar un Medico",
+                    "Eliminar un Medico",
+                    "Registrar un Paciente",
+                    "Ver informacion de un Paciente",
+                    "Actualizar un Paciente",
+                    "Eliminar un Paciente",
+                    "Ver lista de medicos",
+                    "Ver lista de pacientes",
+                    "Obtener Paciente con mas de 5 tratamientos",
+                    "Salir"
+            };
+
+            // Crear lista con las opciones
+            JList<String> lista = new JList<>(opciones);
+            lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+            // Mostrar el menú vertical en un JOptionPane
+            int seleccion = JOptionPane.showConfirmDialog(
+                    null,
+                    new JScrollPane(lista),
+                    "Seleccione una acción",
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (seleccion == JOptionPane.OK_OPTION) {
+                String opcionElegida = lista.getSelectedValue();
+
+                if (opcionElegida == null) {
+                    JOptionPane.showMessageDialog(null, "No seleccionaste ninguna opción.");
+                    continue;
+                }
+
+                // Evaluar la opción seleccionada
+                switch (opcionElegida) {
+                    case "Registrar un Medico":
+                        registrarUnMedico(consultorio);
+                        break;
+                    case "Ver informacion de un Medico":
+                        verInfoUnMedico(consultorio);
+                        break;
+                    case "Actualizar un Medico":
+                        actualizarUnMedico(consultorio);
+                        break;
+                    case "Eliminar un Medico":
+                        eliminarUnMedico(consultorio);
+                        break;
+                    case "Registrar un Paciente":
+                        registrarUnPaciente(consultorio);
+                        break;
+                    case "Ver informacion de un Paciente":
+                        verInfoUnPaciente(consultorio);
+                        break;
+                    case "Actualizar un Paciente":
+                        actualizarUnPaciente(consultorio);
+                        break;
+                    case "Eliminar un Paciente":
+                        eliminarUnPaciente(consultorio);
+                        break;
+                    case "Ver lista de medicos":
+                        verListaTodosMedicos(consultorio);
+                        break;
+                    case "Ver lista de pacientes":
+                        verListaTodosPacientes(consultorio);
+                        break;
+                    case "Obtener Paciente con mas de 5 tratamientos":
+                        obtenerPacientesMas5TratamientosRealizados(consultorio);
+                        break;
+                    case "Salir":
+                        continuar = false;
+                        JOptionPane.showMessageDialog(null, "¡Hasta luego!");
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "Opción no válida.");
+                }
+            } else {
+                continuar = false;
+                JOptionPane.showMessageDialog(null, "¡Hasta luego!");
+            }
+        }
+    }
+
+    // llamamos a los metodos de consultorio
+    private static void registrarUnMedico(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Medico");
+        if (consultorio.buscarMedico(id) != null) {
+            JOptionPane.showMessageDialog(null, "El Medico ya existe");
+        } else {
+            String nombres = JOptionPane.showInputDialog(null, "Ingrese los nombres del Medico");
+            String apellidos = JOptionPane.showInputDialog(null, "Ingrese los apellidos del Medico");
+            String telefono = JOptionPane.showInputDialog(null, "Ingrese el telefono del Medico");
+            String numLicencia = JOptionPane.showInputDialog(null, "Ingrese el numero de licencia del Medico");
+
+            // Convertir el texto ingresado en una especialidad
+            int especialidadOpcion = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese con el numero la especialidad del Medico (ODONTOLOGIA_GENERAL (0), ORTODONCIA (1), ENDODONCIA (2), CIRUGIA_ORAL (3)"));
+
+            Especialidad especialidad = null;
+            for (Especialidad especialidadAux : Especialidad.values()) {
+                if (especialidadAux.getValor() == especialidadOpcion) {
+                    especialidad = especialidadAux;
+                    break;
+                }
+            }
+            String mensaje = consultorio.registrarMedico(id, nombres, apellidos, telefono, numLicencia, especialidad);
+            JOptionPane.showMessageDialog(null, mensaje);
+        }
+
+    }
+
+    private static void verInfoUnMedico(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Medico");
+        String elMedico = consultorio.verInfoMedico(id);
+        JOptionPane.showMessageDialog(null, elMedico);
+    }
+
+    private static void actualizarUnMedico(Consultorio consultorio) {
+        boolean noExiste = true;
+        while (noExiste) {
+            if (consultorio.getListaMedicos().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No existe un medico");
+                break;
+            } else {
+                noExiste = false;
+                boolean yaEsta = true;
+                String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Medico");
+                while (yaEsta) {
+                    if (consultorio.buscarMedico(id) == null) {
+                        JOptionPane.showMessageDialog(null, "No existe un medico con ese ID");
+                    }else {
+                        yaEsta = false;
+                        String nombres = JOptionPane.showInputDialog(null, "Ingrese los nuevos nombres del Medico");
+                        String apellidos = JOptionPane.showInputDialog(null, "Ingrese los nuevos apellidos del Medico");
+                        String telefono = JOptionPane.showInputDialog(null, "Ingrese el nuevo telefono del Medico");
+                        String numLicencia = JOptionPane.showInputDialog(null, "Ingrese el nuevo numero de licencia del Medico");
+
+                        int especialidadOpcion = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese con el numero la especialidad del Medico (ODONTOLOGIA_GENERAL (0), ORTODONCIA (1), ENDODONCIA (2), CIRUGIA_ORAL (3)"));
+
+                        Especialidad especialidad = null;
+                        for (Especialidad especialidadAux : Especialidad.values()) {
+                            if (especialidadAux.getValor() == especialidadOpcion) {
+                                especialidad = especialidadAux;
+                                break;
+                            }
+                        }
+                        String mensaje = consultorio.actualizarMedico(id, nombres, apellidos, telefono, numLicencia, especialidad);
+                        JOptionPane.showMessageDialog(null, mensaje);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void eliminarUnMedico(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Medico");
+        String mensaje = consultorio.eliminarMedico(id);
+        JOptionPane.showMessageDialog(null, mensaje);
+    }
+
+    private static void registrarUnPaciente(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Paciente");
+        if (consultorio.buscarPaciente(id) != null) {
+            JOptionPane.showMessageDialog(null, "El paciente ya existe");
+        } else {
+            String numHistoriaClinica = JOptionPane.showInputDialog(null, "Ingrese el numero de historia clinica del Paciente");
+            String nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del Paciente");
+            byte edad = Byte.parseByte(JOptionPane.showInputDialog(null, "Ingrese la edad del Paciente"));
+            String telefono = JOptionPane.showInputDialog(null, "Ingrese el numero de telefono del Paciente");
+            String direccion = JOptionPane.showInputDialog(null, "Ingrese la direccion del Paciente");
+            LocalDate fechaUltimaConsulta = LocalDate.parse(JOptionPane.showInputDialog(null, "Ingrese la fecha de la ultima consulta del Paciente asi: YYYY-MM-DD"));
+            int tratamientosRealizados = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el numero de tratamientos realizados del paciente"));
+            String mensaje = consultorio.registrarPaciente(id, numHistoriaClinica, nombre, edad, telefono, direccion, fechaUltimaConsulta, tratamientosRealizados);
+            JOptionPane.showMessageDialog(null, mensaje);
+        }
+    }
+
+    private static void verInfoUnPaciente(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Paciente");
+        String mensaje = consultorio.verInfoPaciente(id);
+        JOptionPane.showMessageDialog(null, mensaje);
+    }
+
+    private static void actualizarUnPaciente(Consultorio consultorio) {
+        boolean vacio = true;
+        while (vacio) {
+            if (consultorio.getListaPacientes().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "No existe un paciente");
+                break;
+            }else {
+                vacio = false;
+                boolean noExiste = true;
+                String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Paciente");
+                while (noExiste) {
+                    if (consultorio.buscarPaciente(id) == null) {
+                        JOptionPane.showMessageDialog(null, "El paciente no existe");
+                    }else {
+                        noExiste = false;
+                        byte edad = Byte.parseByte(JOptionPane.showInputDialog(null, "Ingrese la edad del Paciente"));
+                        String telefono = JOptionPane.showInputDialog(null, "Ingrese el numero de telefono del Paciente");
+                        String direccion = JOptionPane.showInputDialog(null, "Ingrese la direccion del Paciente");
+                        LocalDate fechaUltimaConsulta = LocalDate.parse(JOptionPane.showInputDialog(null, "Ingrese la fecha de la ultima consulta del Paciente asi: YYYY-MM-DD"));
+                        int tratamientosRealizados = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el numero de tratamientos del Paciente"));
+                        String mensaje = consultorio.actualizarPaciente(id, edad, telefono, direccion, fechaUltimaConsulta, tratamientosRealizados);
+                        JOptionPane.showMessageDialog(null, mensaje);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void eliminarUnPaciente(Consultorio consultorio) {
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del Paciente");
+        String mensaje = consultorio.eliminarPaciente(id);
+        JOptionPane.showMessageDialog(null, mensaje);
+    }
+
+    private static void obtenerPacientesMas5TratamientosRealizados(Consultorio consultorio) {
+        JOptionPane.showMessageDialog(null, consultorio.pacientesMas5TratamientosRealizados());
+    }
+
+    private static void verListaTodosMedicos(Consultorio consultorio) {
+        JOptionPane.showMessageDialog(null, consultorio.getListaMedicos());
+    }
+
+    private static void verListaTodosPacientes(Consultorio consultorio) {
+        JOptionPane.showMessageDialog(null, consultorio.getListaPacientes());
+    }
+}
