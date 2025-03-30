@@ -1,0 +1,52 @@
+package org.uniquindio.edu.co.poo.model;
+
+// esta es la clase padre de Medico (es este caso)
+public abstract class Persona {
+    private String id;
+    private String nombres;
+    private String apellidos;
+    private String telefono;
+
+    //constructor
+    public Persona(String id, String nombres, String apellidos, String telefono) {
+        this.id = id;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+    }
+
+    // getters y setters
+    public String getID() {
+        return id;
+    }
+    public void setID(String id) {
+        this.id = id;
+    }
+    public String getNombres() {
+        return nombres;
+    }
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
+    }
+    public String getApellidos() {
+        return apellidos;
+    }
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+    public String getTelefono() {
+        return telefono;
+    }
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    //metodo toString
+    @Override
+    public String toString() {
+        return "Persona: "     +
+                "\nID: "       + id     +
+                "\nNombres: "   + nombres +
+                "\nTelefono: " + telefono;
+    }
+}
