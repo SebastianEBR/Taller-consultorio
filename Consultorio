@@ -1,0 +1,244 @@
+package org.uniquindio.edu.co.poo.model;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Consultorio {
+    private String nombre;
+    private String ubicacion;
+    private String nit;
+
+    //conexion con otras clases
+    private List<Medico> listaMedicos = new ArrayList<>();
+    private List<Paciente> listaPacientes = new ArrayList<>();
+
+    // constructor
+    public Consultorio(String nombre, String ubicacion, String nit) {
+        this.nombre = nombre;
+        this.ubicacion = ubicacion;
+        this.nit = nit;
+    }
+
+    //getters y setters
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public String getNit() {
+        return nit;
+    }
+
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
+
+    public List<Medico> getListaMedicos() {
+        return listaMedicos;
+    }
+
+    public void setListaMedicos(List<Medico> listaMedicos) {
+        this.listaMedicos = listaMedicos;
+    }
+
+    public List<Paciente> getListaPacientes() {
+        return listaPacientes;
+    }
+
+    public void setListaPacientes(List<Paciente> listaPacientes) {
+        this.listaPacientes = listaPacientes;
+    }
+
+    @Override
+    public String toString() {
+        return "Consultorio{" +
+                "nombre='" + nombre + '\'' +
+                ", ubicacion='" + ubicacion + '\'' +
+                ", nit='" + nit + '\'' +
+                ", listaMedicos=" + listaMedicos +
+                ", listaPacientes=" + listaPacientes +
+                '}';
+    }
+
+    // CRUD relacionados con los medicos
+    // metodo para registrar un medico
+    public String registrarMedico(String id, String nombres, String apellidos, String telefono, String numLicencia,
+                                  Especialidad especialidad) {
+        String mensaje = "";
+        // verificar si en la lista ya existe el medico
+        Medico medicoAux = buscarMedico(id);
+        Paciente paciente = buscarPaciente(id);
+        if (medicoAux != null) {
+            if (medicoAux.getID().equals(paciente.id())) {
+                mensaje = "Ya hay una persona con el mismo id (puede que un medico o un paciente tenga el mismo id que otro medico o paciente";
+            }else {
+                mensaje = "Ya existe un medico con ese id";
+            }
+        }else { // si no estonces crea el medico
+                Medico medico = new Medico(id, nombres, apellidos, telefono, numLicencia, especialidad);
+                listaMedicos.add(medico);
+                mensaje = "Medico registrado con exito";
+            }
+        return mensaje;
+    }
+
+    // metodo para buscar un medico
+    public Medico buscarMedico(String id) {
+        Medico medico = null;
+        for (Medico medicoAux : listaMedicos) {
+            if (medicoAux.getID().equals(id)) {
+                medico = medicoAux;
+            }
+        }
+        return medico;
+    }
+
+    // metodo para ver la informacion de un medico
+    public String verInfoMedico(String id) {
+        String mensaje = "";
+        Medico medico = buscarMedico(id);
+        if (listaMedicos.isEmpty() || medico == null) {
+            mensaje = "No existe un medico con ese id";
+        }else {
+            mensaje = medico.toString();
+        }
+        return mensaje;
+    }
+
+    // metodo para actualizar un medico
+    public String actualizarMedico(String id, String nombres, String apellidos, String telefono, String numLicencia,
+                                   Especialidad especialidad) {
+        String mensaje = "";
+        Medico medico = buscarMedico(id);
+        if(medico != null) {
+            medico.setNombres(nombres);
+            medico.setApellidos(apellidos);
+            medico.setTelefono(telefono);
+            medico.setNumLicencia(numLicencia);
+            medico.setEspecialidad(especialidad);
+            mensaje = "medico actualizado con exito";
+        }else {
+            mensaje = "No existe un medico con ese id";
+        }
+        return mensaje;
+    }
+
+    // metodo para eliminar un medico
+    public String eliminarMedico(String id) {
+        String mensaje = "";
+        Medico medico = buscarMedico(id);
+        if(medico != null) {
+            listaMedicos.remove(medico);
+            mensaje = "Medico eliminado con exito";
+        }else {
+            mensaje = "No existe un medico con ese id";
+        }
+        return mensaje;
+    }
+
+    // CRUD relacionado con pancientes
+    // metodo para registrar un paciente
+    public String registrarPaciente(String id, String numHistoriaClinica, String nombre, byte edad, String telefono,
+                                    String direccion, LocalDate fechaUltimaConsulta, int tratamientosRealizados) {
+        String mensaje = "";
+
+        // verificar si el paciente ya existe
+        Paciente pacienteAux = buscarPaciente(id);
+        Medico medicoAux = buscarMedico(id);
+
+        if (pacienteAux != null) {
+            if (pacienteAux.numHistoriaClinica().equals(numHistoriaClinica)) {
+                mensaje = "Ya existe un paciente con ese número de historia clínica.";
+            } else if (medicoAux != null && pacienteAux.id().equals(medicoAux.getID())) {
+                mensaje = "Ya hay una persona registrada (paciente o médico) con el mismo ID.";
+            } else {
+                mensaje = "Ya existe un paciente con ese ID.";
+            }
+        } else {
+            Paciente paciente = new Paciente(id, numHistoriaClinica, nombre, edad, telefono, direccion,
+                    fechaUltimaConsulta, tratamientosRealizados);
+            listaPacientes.add(paciente);
+            mensaje = "Paciente registrado con éxito.";
+        }
+        return mensaje;
+    }
+
+        // metodo para buscar paciente
+    public Paciente buscarPaciente(String id) {
+        Paciente paciente = null;
+        for (Paciente pacienteAux : listaPacientes) {
+            if (pacienteAux.id().equals(id)) {
+                paciente = pacienteAux;
+            }
+        }
+        return paciente;
+    }
+
+    // metodo para ver la info de un paciente
+    public String verInfoPaciente(String id) {
+        String mensaje = "";
+        Paciente paciente = buscarPaciente(id);
+        if(paciente != null) {
+            mensaje = paciente.toString();
+        }else {
+            mensaje = "No existe un paciente con ese id";
+        }
+        return mensaje;
+    }
+
+    // metodo para actualizar un paciente
+    public String actualizarPaciente(String id, byte newEdad, String newTelefono,
+                                     String newDireccion, LocalDate newFechaUltimaConsulta, int newTratamientosRealizados) {
+        String mensaje = "";
+        Paciente paciente = buscarPaciente(id);
+        if (paciente != null) {
+            String idPaciente = paciente.id();
+            String numHistoriaClinica = paciente.numHistoriaClinica();
+            String nombre = paciente.nombre();
+
+            Paciente pacienteActualizado = new Paciente(idPaciente, numHistoriaClinica, nombre, newEdad,
+                    newTelefono, newDireccion, newFechaUltimaConsulta, newTratamientosRealizados);
+            listaPacientes.add(pacienteActualizado);
+            mensaje = "paciente actualizado con exito";
+        }else {
+            mensaje = "No existe un paciente con ese id";
+        }
+        return mensaje;
+    }
+
+    // metodo para eliminar un Paciente
+    public String eliminarPaciente(String id) {
+        String mensaje = "";
+        Paciente paciente = buscarPaciente(id);
+        if(paciente != null) {
+            listaPacientes.remove(paciente);
+            mensaje = "Paciente eliminado con exito";
+        }else {
+            mensaje = "No existe un paciente con ese id";
+        }
+        return mensaje;
+    }
+
+    // metodos aparte del CRUD
+    public ArrayList<Paciente> pacientesMas5TratamientosRealizados() {
+        ArrayList<Paciente> pacientes = new ArrayList<>();
+        for (Paciente pacienteAux : listaPacientes) {
+            if(pacienteAux.tratamientosRealizados() > 5) {
+                pacientes.add(pacienteAux);
+            }
+        }
+        return pacientes;
+    }
+}
